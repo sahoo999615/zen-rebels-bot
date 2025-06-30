@@ -2,9 +2,9 @@
   "name": "zen-rebels-bot",
   "version": "1.0.0",
   "description": "Zen Rebels AI Bot",
-  "main": "ZenRebelsBot.js",
+  "main": "zenRebelsBot.js",
   "scripts": {
-    "start": "node ZenRebelsBot.js"
+    "start": "node zenRebelsBot.js"
   },
   "dependencies": {
     "express": "^4.18.2",
