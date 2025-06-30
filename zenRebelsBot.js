@@ -1,46 +1,28 @@
-// zenRebelsBot.js
 require('dotenv').config();
-const express = require('express');
-const axios = require('axios');
-const cron = require('node-cron');
+const TelegramBot = require('node-telegram-bot-api');
 
-const app = express();
-const PORT = process.env.PORT || 3000;
-const BOT_TOKEN = process.env.BOT_TOKEN;
-const CHAT_ID = '6076833198'; // your chat ID
+// Load environment variables
+const token = process.env.BOT_TOKEN;
+const chatId = process.env.CHAT_ID;
 
-// Middleware to parse JSON
-app.use(express.json());
+// Create a new bot instance
+const bot = new TelegramBot(token);
 
-// Basic test route
-app.get('/ping', (req, res) => {
-  res.send('Zen Rebels Bot is alive ✨');
-});
-
-// Placeholder AI route
-app.post('/ask', (req, res) => {
-  const userMessage = req.body.message;
-  const botResponse = `You said: "${userMessage}". Zen Rebels hears you. 🧘‍♂️`;
-  res.json({ response: botResponse });
-});
-
-// Reminder function
-function sendDailyReminder() {
-  const message = '🧘‍♂️ Zen check-in: Stay off social media and win today. 🔥 Let’s go, rebel!';
-  axios.post(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-    chat_id: CHAT_ID,
-    text: message
-  }).then(() => {
-    console.log('✅ Daily reminder sent!');
-  }).catch(err => {
-    console.error('❌ Reminder error:', err.response ? err.response.data : err.message);
-  });
+// Function to send a reminder message
+function sendReminder() {
+  const message = "⏰ Time to check in with yourself. Are you staying mindful and off distractions?";
+  bot.sendMessage(chatId, message)
+    .then(() => console.log(`[✔] Reminder sent at ${new Date().toLocaleTimeString()}`))
+    .catch((err) => console.error(`[✖] Failed to send reminder:`, err.message));
 }
 
-// Schedule at 8:00 AM server time
-cron.schedule('0 8 * * *', sendDailyReminder);
+// Send reminder every 2 hours (2 * 60 * 60 * 1000 milliseconds)
+const TWO_HOURS = 2 * 60 * 60 * 1000;
 
-// Start server
-app.listen(PORT, () => {
-  console.log(`Zen Rebels Bot running on port ${PORT}`);
-});
+// Send the first reminder immediately
+sendReminder();
+
+// Then repeat every 2 hours
+setInterval(sendReminder, TWO_HOURS);
+
+console.log("Zen Rebels Bot is running and will send reminders every 2 hours.");
