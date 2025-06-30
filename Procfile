@@ -1,1 +1,1 @@
-web: node ZenRebelsBot.js
+web: node zenRebelsBot.js
